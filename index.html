@@ -90,6 +90,22 @@
       border: 1px solid #ddd;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+
+    .delete-btn {
+      background: #dc3545;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .delete-btn:hover {
+      background: #b02a37;
     }
 
     .total {
@@ -142,6 +158,13 @@
       renderExercises();
     }
 
+    function deleteRep(exIndex, repIndex) {
+      if (confirm("Delete this set?")) {
+        exercises[exIndex].sets.splice(repIndex, 1);
+        renderExercises();
+      }
+    }
+
     function renderExercises() {
       const container = document.getElementById("exercises");
       container.innerHTML = "";
@@ -159,7 +182,10 @@
             ${ex.sets
               .map(
                 (s, idx) =>
-                  `<li>Set ${idx + 1}: ${s.reps} reps @ ${s.weight} kg</li>`
+                  `<li>
+                    <span>Set ${idx + 1}: ${s.reps} reps @ ${s.weight} kg</span>
+                    <button class="delete-btn" onclick="deleteRep(${i}, ${idx})">Delete</button>
+                  </li>`
               )
               .join("")}
           </ul>
