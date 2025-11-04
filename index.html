@@ -108,11 +108,28 @@
       background: #b02a37;
     }
 
+    .clear-btn {
+      background: #6c757d;
+      margin-left: auto;
+      display: block;
+    }
+
+    .clear-btn:hover {
+      background: #495057;
+    }
+
     .total {
       margin-top: 8px;
       font-weight: bold;
       color: #444;
     }
+
+    .exercise-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
   </style>
 </head>
 <body>
@@ -124,6 +141,8 @@
       <input type="text" id="exerciseName" placeholder="Enter exercise name..." />
       <button onclick="addExercise()">Add Exercise</button>
     </div>
+
+    <button class="clear-btn" onclick="clearAll()">🧹 Clear All</button>
 
     <div id="exercises"></div>
   </div>
@@ -182,6 +201,22 @@
       }
     }
 
+    function deleteExercise(index) {
+      if (confirm(`Delete exercise "${exercises[index].name}" and all its sets?`)) {
+        exercises.splice(index, 1);
+        saveData();
+        renderExercises();
+      }
+    }
+
+    function clearAll() {
+      if (confirm("Are you sure you want to clear ALL exercises?")) {
+        exercises = [];
+        localStorage.removeItem("exercises");
+        renderExercises();
+      }
+    }
+
     function renderExercises() {
       const container = document.getElementById("exercises");
       container.innerHTML = "";
@@ -193,7 +228,10 @@
         const div = document.createElement("div");
         div.className = "exercise";
         div.innerHTML = `
-          <h3>${ex.name}</h3>
+          <div class="exercise-actions">
+            <h3>${ex.name}</h3>
+            <button class="delete-btn" onclick="deleteExercise(${i})">Delete Exercise</button>
+          </div>
           <button onclick="addRep(${i})">+ Add Set</button>
           <ul class="rep-list">
             ${ex.sets
