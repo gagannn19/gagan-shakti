@@ -129,7 +129,21 @@
   </div>
 
   <script>
-    const exercises = [];
+    let exercises = [];
+
+    // Load from localStorage on startup
+    window.onload = function() {
+      const savedData = localStorage.getItem("exercises");
+      if (savedData) {
+        exercises = JSON.parse(savedData);
+      }
+      renderExercises();
+    };
+
+    // Save to localStorage helper
+    function saveData() {
+      localStorage.setItem("exercises", JSON.stringify(exercises));
+    }
 
     function addExercise() {
       const name = document.getElementById("exerciseName").value.trim();
@@ -138,6 +152,7 @@
       const exercise = { name, sets: [] };
       exercises.push(exercise);
       document.getElementById("exerciseName").value = "";
+      saveData();
       renderExercises();
     }
 
@@ -155,12 +170,14 @@
       if (isNaN(weightNum) || weightNum < 0) return alert("Please enter a valid weight!");
 
       exercises[index].sets.push({ reps: repsNum, weight: weightNum });
+      saveData();
       renderExercises();
     }
 
     function deleteRep(exIndex, repIndex) {
       if (confirm("Delete this set?")) {
         exercises[exIndex].sets.splice(repIndex, 1);
+        saveData();
         renderExercises();
       }
     }
